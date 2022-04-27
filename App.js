@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, {useContext} from 'react';
 import {View, Text} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
@@ -10,22 +10,17 @@ import Profile from './src/screens/Profile';
 import AuthContextProvider from './src/context/AuthContext';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import HomeNavi from './src/navigation/HomeNavi';
-
-const Tab = createBottomTabNavigator();
-
+import {useAuthContext} from './src/context/AuthContext';
+import BottomTabNavi from './src/navigation/BottomTabNavi';
 function App() {
+  // const {dbUser} = useAuthContext();
+
   return (
-    <NavigationContainer>
-      <AuthContextProvider>
-        <Tab.Navigator
-          screenOptions={{
-            headerShown: false,
-          }}>
-          <Tab.Screen name="HomeNavi" component={HomeNavi} />
-          <Tab.Screen name="Profile" component={Profile} />
-        </Tab.Navigator>
-      </AuthContextProvider>
-    </NavigationContainer>
+    <AuthContextProvider>
+      <NavigationContainer>
+        <BottomTabNavi />
+      </NavigationContainer>
+    </AuthContextProvider>
   );
 }
 
