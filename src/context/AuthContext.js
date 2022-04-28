@@ -1,11 +1,13 @@
 import React, {createContext, useEffect, useContext, useState} from 'react';
-import {Auth} from 'aws-amplify';
+import {Auth, DataStore} from 'aws-amplify';
+import {User} from '../models';
 
 const AuthContext = createContext();
 
 const AuthContextProvider = ({children}) => {
   const [authuser, setAuthuser] = useState(null);
   const [dbUser, setDbUser] = useState(null);
+  const sub = authuser?.attributes?.sub;
 
   useEffect(() => {
     Auth.currentAuthenticatedUser({
@@ -13,13 +15,20 @@ const AuthContextProvider = ({children}) => {
     }).then(setAuthuser);
   }, []);
 
-  const sub = authuser?.attributes?.sub;
+  useEffect(() => {
+    if (sub) {
+      DataStore.query(User, u => u.sub('eq', sub)).then(user => {
+        setDbUser(user[0]);
+      });
+    }
+  }, [sub]);
 
   return (
     <AuthContext.Provider
       value={{
         authuser,
         dbUser,
+        setDbUser,
         sub,
       }}>
       {children}
